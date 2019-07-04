@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[216]:
+# In[366]:
 
 
 #!pip install pygame
 
 
-# In[217]:
+# In[367]:
 
 
 import pygame
@@ -16,7 +16,7 @@ import pygame
 #from agent import Agent
 
 
-# In[218]:
+# In[368]:
 
 
 import random
@@ -57,14 +57,13 @@ class Ball:
         #choice = [-1, 0, 1]
 
 
-# In[219]:
+# In[369]:
 
 
 #Класс тележки
 class Cart:
     def __init__(self, surface, position):
         self.velocity = 5
-        self.pygame = pygame
         self.size = [10, 50] 
         self.position = position
         self.surface = surface
@@ -73,7 +72,7 @@ class Cart:
     def draw(self): 
         pygame.draw.rect(self.surface, 
                          self.color, 
-                         self.pygame.Rect(self.position[0],  
+                         pygame.Rect(self.position[0],  
                                      self.position[1], 
                                      self.size[0], 
                                      self.size[1]))
@@ -81,13 +80,14 @@ class Cart:
         self.position = position
 
     def move_up(self):
-        self.position[1] += 1
-        print('1')
+        if self.position[1] <= window_size[1] - self.size[1]:
+            self.position[1] += self.velocity
     def move_down(self):
-        self.position[1] -= 1
+        if self.position[1] > 0:
+            self.position[1] -= self.velocity
 
 
-# In[220]:
+# In[370]:
 
 
 #Класс вирутального игрока
@@ -95,12 +95,21 @@ class Agent():
     def __init__(self, cart):
         self.cart = cart
         self.last = self.cart.move_up
+        self.n = -1
     #Алгоритм случайной игры    
     def autoplay(self):
-        self.last = random.choice((self.cart.move_up, self.cart.move_down, self.last))
+        if self.n > 0:
+            self.n -= 1
+        else:
+            self.n = 30
+            if ball.position[1] > self.cart.position[1]:
+                self.last = random.choice((self.cart.move_up, self.cart.move_down, self.cart.move_up, self.cart.move_up))
+            else:
+                self.last = random.choice((self.cart.move_up, self.cart.move_down, self.cart.move_down, self.cart.move_down))
+        self.last()                          
 
 
-# In[221]:
+# In[371]:
 
 
 # Функция получения текущей ситуации на игровом поле
@@ -108,7 +117,7 @@ def get_obs(cart_1, cart_2, ball):
     return (cart_1.position, cart_2.position, ball.position, ball.direction)
 
 
-# In[222]:
+# In[372]:
 
 
 #Автоигра
@@ -116,7 +125,7 @@ def auto_move(ball, cart):
     cart.position[1] = ball.position[1] - ball.radius
 
 
-# In[223]:
+# In[373]:
 
 
 pygame.init()
@@ -140,7 +149,7 @@ ball.draw()
 pygame.display.update()
 
 
-# In[224]:
+# In[374]:
 
 
 def game_cicle():
@@ -161,23 +170,19 @@ def game_cicle():
         #Если нажата вверх
         if keys[pygame.K_UP]:
             #Проверка на выход за границы
-            if (cart_1.position[1] >= 0): 
-                cart_1.position[1] = cart_1.position[1] - cart_1.velocity
+            cart_1.move_down()
         #Если нажата вниз
         if keys[pygame.K_DOWN]:
             #Проверка на выход за границы
-            if cart_1.position[1] <= window_size[1] - cart_1.size[1]:
-                cart_1.position[1] = cart_1.position[1] + cart_1.velocity
+            cart_1.move_up()
         #Если нажата W
         if keys[pygame.K_w]:
             #Проверка на выход за границы
-            if (cart_2.position[1] >= 0): 
-                cart_2.position[1] = cart_2.position[1] - cart_2.velocity
+            cart_2.move_down()
         #Если нажата S
         if keys[pygame.K_s]:
             #Проверка на выход за границы
-            if cart_2.position[1] <= window_size[1] - cart_2.size[1]:
-                cart_2.position[1] = cart_2.position[1] + cart_2.velocity
+            cart_2.move_up()
         if keys[pygame.K_ESCAPE]:
                 game = False
                 pygame.quit()
@@ -229,7 +234,7 @@ def game_cicle():
         pygame.display.update()
 
 
-# In[225]:
+# In[375]:
 
 
 while True:
