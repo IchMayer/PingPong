@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[366]:
+# In[406]:
 
 
 #!pip install pygame
 
 
-# In[367]:
+# In[407]:
 
 
 import pygame
@@ -16,7 +16,7 @@ import pygame
 #from agent import Agent
 
 
-# In[368]:
+# In[408]:
 
 
 import random
@@ -42,7 +42,7 @@ class Ball:
                            (int(self.position[0]), int(self.position[1])), 
                            self.radius)
 
-    def setPosition(self, position):
+    def set_Position(self, position):
         self.position = position
         
         angle = random.randint(-45, 45) + random.randint(0, 1) * 180
@@ -50,14 +50,8 @@ class Ball:
         self.velocity_x = self.speed * math.cos(angle * math.pi / 180)
         self.velocity_y = self.speed * math.sin(angle * math.pi / 180)
 
-   #def get_dir():
-    
-   # def first_move():
-       # import random
-        #choice = [-1, 0, 1]
 
-
-# In[369]:
+# In[409]:
 
 
 #Класс тележки
@@ -76,7 +70,7 @@ class Cart:
                                      self.position[1], 
                                      self.size[0], 
                                      self.size[1]))
-    def setPosition(self, position):
+    def set_Position(self, position):
         self.position = position
 
     def move_up(self):
@@ -87,7 +81,7 @@ class Cart:
             self.position[1] -= self.velocity
 
 
-# In[370]:
+# In[410]:
 
 
 #Класс вирутального игрока
@@ -97,11 +91,11 @@ class Agent():
         self.last = self.cart.move_up
         self.n = -1
     #Алгоритм случайной игры    
-    def autoplay(self):
+    def auto_play(self):
         if self.n > 0:
             self.n -= 1
         else:
-            self.n = 30
+            self.n = 20
             if ball.position[1] > self.cart.position[1]:
                 self.last = random.choice((self.cart.move_up, self.cart.move_down, self.cart.move_up, self.cart.move_up))
             else:
@@ -109,7 +103,7 @@ class Agent():
         self.last()                          
 
 
-# In[371]:
+# In[411]:
 
 
 # Функция получения текущей ситуации на игровом поле
@@ -117,7 +111,7 @@ def get_obs(cart_1, cart_2, ball):
     return (cart_1.position, cart_2.position, ball.position, ball.direction)
 
 
-# In[372]:
+# In[412]:
 
 
 #Автоигра
@@ -125,7 +119,7 @@ def auto_move(ball, cart):
     cart.position[1] = ball.position[1] - ball.radius
 
 
-# In[373]:
+# In[413]:
 
 
 pygame.init()
@@ -149,7 +143,7 @@ ball.draw()
 pygame.display.update()
 
 
-# In[374]:
+# In[414]:
 
 
 def game_cicle():
@@ -220,7 +214,7 @@ def game_cicle():
         ball.position[1] += ball.velocity_y 
 
         #auto_move(ball, cart_2)
-        agent.autoplay()
+        agent.auto_play()
 
         #Очистка экрана
         window.fill((0,0,0))
@@ -234,14 +228,14 @@ def game_cicle():
         pygame.display.update()
 
 
-# In[375]:
+# In[415]:
 
 
 while True:
     game_cicle()
-    cart_1.setPosition([0, 250])    
-    cart_2.setPosition([490, 250])
-    ball.setPosition([250,250])
+    cart_1.set_Position([0, 250])    
+    cart_2.set_Position([490, 250])
+    ball.set_Position([250,250])
 pygame.quit()
 
 
